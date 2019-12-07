@@ -8,13 +8,48 @@ namespace Puzzles
 {
     public class Day6
     {
+        private const string MainPlanet = "com";
         public async Task Run()
         {
             Console.WriteLine("Day 6 - puzzle 1");
-            var planetsRelations = await GetAllPlanets();
+            var planets = await GetAllPlanets();
 
-            int directAndIndirectRelations = CalculateDirectAndIndirectRelations(planetsRelations);
+            int directAndIndirectRelations = CalculateDirectAndIndirectRelations(planets);
             Console.WriteLine($"Result for puzzle 1 is: {directAndIndirectRelations}");
+
+            int amountOfOrbitalTransfersBetween = CalculateOrbitalTransfersBetweenPlanets(planets: planets, from: "you", to: "san");
+            Console.WriteLine($"Result for puzzle 2 is: {amountOfOrbitalTransfersBetween}");
+        }
+
+        private static int CalculateOrbitalTransfersBetweenPlanets(string from, string to, IEnumerable<Planet> planets)
+        {
+            var fromPlanet = planets.Single(x => x.Name == from);
+            var toPlanet = planets.Single(x => x.Name == to);
+
+            var allParentsOfFrom = GetAllParentsOfPlanet(fromPlanet, planets);
+            var allParentsOfTo = GetAllParentsOfPlanet(toPlanet, planets);
+
+            var list1 = new[] { fromPlanet }.Concat(allParentsOfFrom).Select(x => x.CenterPlanetName);
+            var list2 = new[] { toPlanet }.Concat(allParentsOfTo).Select(x => x.CenterPlanetName);
+
+            var result = list1
+                .Concat(list2)
+                .GroupBy(x => x)
+                .Select(x => new { Planet = x.Key, Count = x.Count() });
+            return result.Where(x => x.Count == 1).Select(x => x.Planet).Count();
+        }
+
+        private static IEnumerable<Planet> GetAllParentsOfPlanet(Planet fromPlanet, IEnumerable<Planet> planets)
+        {
+            var directParent = planets.Single(x => x.Name == fromPlanet.CenterPlanetName);
+            if (directParent.CenterPlanetName == MainPlanet)
+            {
+                return new[] { directParent };
+            }
+            else
+            {
+                return new[] { directParent }.Concat(GetAllParentsOfPlanet(directParent, planets));
+            }
         }
 
         private static int CalculateDirectAndIndirectRelations(IEnumerable<Planet> planetsRelations)
