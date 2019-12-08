@@ -34,9 +34,8 @@ namespace Puzzles
 
             var result = list1
                 .Concat(list2)
-                .GroupBy(x => x)
-                .Select(x => new { Planet = x.Key, Count = x.Count() });
-            return result.Where(x => x.Count == 1).Select(x => x.Planet).Count();
+                .GroupBy(x => x);
+            return result.Where(x => x.Count() == 1).Count();
         }
 
         private static IEnumerable<Planet> GetAllParentsOfPlanet(Planet fromPlanet, IEnumerable<Planet> planets)

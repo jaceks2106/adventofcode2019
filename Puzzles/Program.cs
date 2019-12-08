@@ -23,7 +23,9 @@ namespace Day1
                 //await new Day5().Run1();
                 //await new Day5().Run2();
 
-                await new Day6().Run();
+                //await new Day6().Run();
+
+                await new Day7().Run();
 
                 Console.WriteLine("Click any key to continue");
                 Console.ReadKey();

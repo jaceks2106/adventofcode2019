@@ -22,8 +22,6 @@ namespace Puzzles
             ProcessInputs2(new List<int>(numbers).ToArray());
         }
 
-        private static int GetPositiveNumberOr0(int number) => number >= 0 ? number : 0;
-
         private int ProcessInputs1(int[] inputs)
         {
             bool shouldStopProcessing = false;
@@ -65,7 +63,7 @@ namespace Puzzles
                         else inputs[i + 1] = inputInt;
                         i += 2;
                         break;
-                    case 4: // print input at index
+                    case 4: // print output
                         if (firstParameterMode == 0) Console.WriteLine(inputs[inputs[i + 1]]);
                         else Console.WriteLine(inputs[i + 1]);
                         i += 2;
@@ -180,7 +178,7 @@ namespace Puzzles
         }
 
 
-        public (int firstParameterMode, int secondParameterMode, int thirdParameterMode, int opCode) GetParameters(
+        private (int firstParameterMode, int secondParameterMode, int thirdParameterMode, int opCode) GetParameters(
             string firstInputAsString)
         {
             var populatedInputWith0 = new List<char>();
@@ -194,7 +192,8 @@ namespace Puzzles
             int firstParameterMode = 0;
             int secondParameterMode = 0;
             int thirdParameterMode = 0;
-            var firstOpcode = int.Parse(firstInputAsString.Substring(GetPositiveNumberOr0(firstInputAsString.Length - 2)));
+            var number = firstInputAsString.Length - 2; number = number >= 0 ? number : 0;
+            var firstOpcode = int.Parse(firstInputAsString.Substring(number));
 
             for (int i = firstInputAsString.Length - 3; i >= 0; i--)
             {
